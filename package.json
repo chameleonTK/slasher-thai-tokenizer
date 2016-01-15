@@ -1,0 +1,22 @@
+{
+  "name": "Slasher",
+  "version": "0.0.1",
+  "description": "Tokenizer for Thai Language.",
+  "main": "app.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://kramatk@bitbucket.org/kramatk/slasher.git"
+  },
+  "keywords": [
+    "thai",
+    "tokenizer"
+  ],
+  "author": "Pakawat Nakwijit",
+  "license": "MIT"
+}
