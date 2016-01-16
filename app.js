@@ -1,25 +1,13 @@
-// var fs = require('fs');
-// fs.readFile('word.text', 'utf8', function(err, contents) {
-//     console.log(contents);
-// });
 
+var trieBuilder = require("./TrieBuilder.js");
 var tokenizer = require("./Tokenizer.js");
 
-tokenizer.tokenize({
-	startState:"a",
-	states:{
-		"a":{
-			name:"a",
-			nextState:{}
-		},
-		"b":{
-			name:"b",
-			nextState:{
-				"b":{
-					name:"bb",
-					nextState:{}
-				}
-			}
-		},
-	}
-},"aabb");
+trieBuilder.create('SubWord.text')
+.then(function(trie) {
+	console.log(trie);	
+	// var tokens = tokenizer.tokenize(finiteAutomata,"aabb");
+	
+},function(err){
+	console.log(err);
+})
+
