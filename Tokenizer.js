@@ -20,15 +20,15 @@ Tokenizer.prototype.tokenize = function(trie,str){
 		var nextState = trie.getNextState(state,str[index]);
 		if(this.debug){
 			console.log("== forward ==");
-			console.log("index: "+index);
 			console.log("state: "+state.name);
 		}
 		while( index < str.length && nextState && !failedPrev[index][state.name]){
 			stack.push(state);
+
+			nextState = trie.getNextState(state,str[index]);
 			state = nextState;
 
 			index++;
-			nextState = trie.getNextState(state,str[index-1]);
 			if(this.debug){
 				console.log("state: "+state.name);
 			}
@@ -40,8 +40,8 @@ Tokenizer.prototype.tokenize = function(trie,str){
 
 		while(!state.isFinalState){
 			failedPrev[index][state.name] = true;
-			stack.pop();
-			i--;
+			state = stack.pop()
+			index--;
 			if(state.isBottomStack){
 				if(this.debug){
 					console.log("Failure: Tokenization is impossible.");
@@ -49,7 +49,7 @@ Tokenizer.prototype.tokenize = function(trie,str){
 				break;
 			}
 		}
-		
+
 		tokens.push(state.name);
 		if(index>=str.length){
 			if(this.debug){
@@ -62,4 +62,4 @@ Tokenizer.prototype.tokenize = function(trie,str){
 };
 
 
-module.exports = (new Tokenizer);
+module.exports = (new Tokenizer(true));
