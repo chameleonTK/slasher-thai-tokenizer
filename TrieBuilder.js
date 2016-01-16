@@ -11,26 +11,29 @@ TrieBuilder.prototype.create = function(wordFile){
 			"":{
 				name:"ROOT",
 				nextStates:{
-					// "a":{
-					// 	name:"a",
-					// 	nextStates:{},
-					// 	isFinalState:true,
-					// },
-					// "b":{
-					// 	name:"b",
-					// 	nextStates:{
-					// 		"b":{
-					// 			name:"bb",
-					// 			nextStates:{},
-					// 			isFinalState:true,
-					// 		}
-					// 	}
-					// },
 				}
 			},
 		}
 
 		var startState = states[""];
+
+		words.forEach(function(word){
+			var state = startState;
+			var stateName = "";
+			for (var i = 0; i < word.length; i++) {
+				stateName += word[i];
+				if(!state.nextStates.hasOwnProperty(word[i])){
+					state.nextStates[word[i]] = {
+						name: stateName,
+						nextStates:{}
+					}
+				}
+
+				state = state.nextStates[word[i]];
+			}
+			state.isFinalState = true;
+		})
+
 		return (new Trie(states,startState));
 	}
 
