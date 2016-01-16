@@ -18,5 +18,8 @@
     "tokenizer"
   ],
   "author": "Pakawat Nakwijit",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "promise": "^7.1.1"
+  }
 }
