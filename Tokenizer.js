@@ -62,4 +62,4 @@ Tokenizer.prototype.tokenize = function(trie,str){
 };
 
 
-module.exports = (new Tokenizer(true));
+module.exports = (new Tokenizer());

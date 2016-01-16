@@ -4,9 +4,44 @@ var Trie = require("./Trie.js");
 
 var TrieBuilder = function () {};
 
-TrieBuilder.prototype.create = function(wordFile){
+TrieBuilder.prototype.appendWord = function(trie,word){
+	var state = trie.startState;
+	var stateName = "";
+	for (var i = 0; i < word.length; i++) {
+		stateName += word[i];
+		if(!state.nextStates.hasOwnProperty(word[i])){
+			state.nextStates[word[i]] = {
+				name: stateName,
+				nextStates:{}
+			}
+		}
 
-	function generateTrieBuilder(words){
+		state = state.nextStates[word[i]];
+	}
+	state.isFinalState = true;
+}
+
+TrieBuilder.prototype.importFile = function(trie,filename){
+	var vm = this;
+	return new Promise(function (resolve, reject) {
+		Fs.readFile(filename, 'utf8', function(err, contents) {
+		    if(err){
+		    	reject(err);
+		    }else{
+		    	var words = contents.split("\n");
+		    	words.forEach(function(word){
+					vm.appendWord(trie,word);
+				})
+		    	resolve(trie);	
+		    }
+		});
+	});
+}
+
+TrieBuilder.prototype.create = function(wordFiles){
+	var vm = this;
+
+	function generateTrieBuilder(){
 		var states = {
 			"":{
 				name:"ROOT",
@@ -16,40 +51,26 @@ TrieBuilder.prototype.create = function(wordFile){
 		}
 
 		var startState = states[""];
-
-		words.forEach(function(word){
-			var state = startState;
-			var stateName = "";
-			for (var i = 0; i < word.length; i++) {
-				stateName += word[i];
-				if(!state.nextStates.hasOwnProperty(word[i])){
-					state.nextStates[word[i]] = {
-						name: stateName,
-						nextStates:{}
-					}
-				}
-
-				state = state.nextStates[word[i]];
-			}
-			state.isFinalState = true;
-		})
-
-		return (new Trie(states,startState));
+		var trie = (new Trie(states,startState))
+		return trie;
 	}
-
+	
+	var trie = generateTrieBuilder();
 	return new Promise(function (resolve, reject) {
-		Fs.readFile(wordFile, 'utf8', function(err, contents) {
-		    if(err){
-		    	reject(err);
-		    }else{
-		    	var words = contents.split("\n");
-
-		    	var trie = generateTrieBuilder(words);
-		    	resolve(trie);	
-		    }
-		    
-		});	
+		
+		var promises = [];
+		wordFiles.forEach(function(wordFile){
+			var p = vm.importFile(trie,wordFile);
+			promises.push(p);
+		})
+		Promise.all(promises).then(function(){
+			resolve(trie);
+		},function(){
+			reject("Cannot Construct Trie.");
+		});
 	});
+
+	return 
 };
 
 
