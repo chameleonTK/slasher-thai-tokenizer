@@ -13,6 +13,7 @@ Tokenizer.prototype.tokenize = function(trie,str){
 	var index =0;
 	var tokens = [];
 	while(true){
+		var s = "";
 		var bottomStack = { isBottomStack: true};
 		var stack = [bottomStack];
 
@@ -28,7 +29,9 @@ Tokenizer.prototype.tokenize = function(trie,str){
 			nextState = trie.getNextState(state,str[index]);
 			state = nextState;
 
+			s += str[index];
 			index++;
+			
 			if(this.debug){
 				console.log("state: "+state.name);
 			}
@@ -41,16 +44,20 @@ Tokenizer.prototype.tokenize = function(trie,str){
 		while(!state.isFinalState){
 			failedPrev[index][state.name] = true;
 			state = stack.pop()
-			index--;
 			if(state.isBottomStack){
+				//// skip this charactors
+				s = str[index];
+				index++;
 				if(this.debug){
 					console.log("Failure: Tokenization is impossible.");
 				}
 				break;
 			}
+			index--;
+			s = s.slice(0, -1);
 		}
 
-		tokens.push(state.name);
+		tokens.push(s);
 		if(index>=str.length){
 			if(this.debug){
 				console.log("Successful: Complete Tokenization.");
